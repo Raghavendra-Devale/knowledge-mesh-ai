@@ -1,0 +1,70 @@
+from fastapi import Depends, Request
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+
+from app.repositories.chunk_repository import ChunkRepository
+
+from app.services.embedding_service import EmbeddingService
+from app.services.retrieval_service import RetrievalService
+from app.services.llm_service import LLMService
+from app.services.rag_service import RagService
+
+
+from app.services.ingestion_service import IngestionService
+from app.services.chunking_service import ChunkingService
+
+
+
+def get_chunk_repository(
+    db: AsyncSession = Depends(get_db)
+):
+    return ChunkRepository(db)
+
+
+def get_embedding_service(
+    request: Request
+):
+    return request.app.state.embedding_service
+
+
+def get_retrieval_service(
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
+    embedding_service: EmbeddingService = Depends(get_embedding_service)
+):
+
+    return RetrievalService(
+        chunk_repository=chunk_repository,
+        embedding_service=embedding_service
+    )
+
+
+def get_llm_service():
+    return LLMService()
+
+
+def get_rag_service(
+    retrieval_service: RetrievalService = Depends(get_retrieval_service),
+    llm_service: LLMService = Depends(get_llm_service)
+):
+
+    return RagService(
+        retrieval_service=retrieval_service,
+        llm_service=llm_service
+    )
+
+def get_chunking_service():
+    return ChunkingService()
+
+
+def get_ingestion_service(
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
+    embedding_service: EmbeddingService = Depends(get_embedding_service),
+    chunking_service: ChunkingService = Depends(get_chunking_service)
+):
+
+    return IngestionService(
+        chunk_repository=chunk_repository,
+        embedding_service=embedding_service,
+        chunking_service=chunking_service
+    )
