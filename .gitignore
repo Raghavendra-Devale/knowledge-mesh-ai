@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Database
+*.db
+
+# Uploads
+data/uploads/
+
+# Environment files
+.env
+
+# Alembic
+migrations/versions/*.pyc
