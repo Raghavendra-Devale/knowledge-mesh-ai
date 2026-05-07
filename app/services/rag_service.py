@@ -1,4 +1,4 @@
-from app.services.retrieval_service import RetrievalService
+from app.services.retrieval.retrieval_service import RetrievalService
 from app.services.llm_service import LLMService
 
 
@@ -43,21 +43,21 @@ Question:
 {question}
 """
 
-        answer = await self.llm_service.generate_answer(
+        answer = await self.llm_service.generate_response(
             prompt=prompt
         )
 
         return {
             "question": question,
             "answer": answer,
-            "sources": [
-                    {
-                        "content": chunk.content,
-                        "document_name": chunk.document_name,
-                        "page_number": chunk.page_number,
-                        "source_type": chunk.source_type,
-                        "source_url": chunk.source_url
-                    }
-                    for chunk in chunks
-                ]
+            # "sources": [
+            #         {
+            #             "content": chunk.content,
+            #             "document_name": chunk.document_name,
+            #             "page_number": chunk.page_number,
+            #             "source_type": chunk.source_type,
+            #             "source_url": chunk.source_url
+            #         }
+            #         for chunk in chunks
+            #     ]
         }

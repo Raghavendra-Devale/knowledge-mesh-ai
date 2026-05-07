@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.dependencies import get_ingestion_service
 
-from app.services.ingestion_service import IngestionService
+from app.services.ingestion.ingestion_service import IngestionService
 
 
 router = APIRouter(

@@ -1,21 +1,18 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
+from app.services.llm.llm_factory import get_llm_provider
 
 from app.core.config import settings
 
 class LLMService:
     def __init__(self):
         
-        self.llm = ChatGoogleGenerativeAI(
-            model = settings.GEMINI_MODEL,
-            google_api_key = settings.GEMINI_API_KEY,
-            temperature = 0.3
-        )
+        self.provider = get_llm_provider()
         
-    async def generate_answer(
+    async def generate_response(
         self,
         prompt:str
     ) -> str:
         
-        response = await self.llm.ainvoke(prompt)
-        
-        return response.content
+        return await self.provider.generate_response(
+            prompt = prompt
+        )

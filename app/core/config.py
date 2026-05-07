@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
+    LLM_PROVIDER: str = "gemini"
+
+    OPENAI_API_KEY: str | None = None
+    OPENAI_MODEL: str = "gpt-4.1-mini"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"

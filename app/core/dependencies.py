@@ -6,12 +6,12 @@ from app.core.database import get_db
 from app.repositories.chunk_repository import ChunkRepository
 
 from app.services.embedding_service import EmbeddingService
-from app.services.retrieval_service import RetrievalService
+from app.services.retrieval.retrieval_service import RetrievalService
 from app.services.llm_service import LLMService
 from app.services.rag_service import RagService
 
 
-from app.services.ingestion_service import IngestionService
+from app.services.ingestion.ingestion_service import IngestionService
 from app.services.chunking_service import ChunkingService
 
 
