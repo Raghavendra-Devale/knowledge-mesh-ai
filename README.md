@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # knowledge-mesh-ai
 Production-grade AI Retrieval Platform built with FastAPI, PostgreSQL + pgvector, semantic search, RAG pipelines, and scalable knowledge ingestion architecture.
 =======
@@ -333,4 +332,4 @@ This project is also a deep learning journey into:
 # License
 
 This project is licensed under the MIT License.
->>>>>>> d536fa34740f0162d3df77210baa9f871b8af8b6
+d536fa34740f0162d3df77210baa9f871b8af8b6
