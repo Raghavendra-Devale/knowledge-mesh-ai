@@ -31,12 +31,18 @@ class IngestionService:
         print(repr(pdf_path))
         
         documents = loader.load()
-        
+        print(f"Pages loaded: {len(documents)}")
+
         chunks = self.chunking_service.split_text(documents)
+       # logger.info(f"Total chunks created: {len(chunks)}")
+        print(f"Total chunks created: {len(chunks)}")
         
         entities = []
         
         for index, chunk in enumerate(chunks):
+            
+            print(f"Chunk {index}:")
+            print(chunk.page_content[:300])
             
             embedding = self.embedding_service.generate_embedding(
                 chunk.page_content

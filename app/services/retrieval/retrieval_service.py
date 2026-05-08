@@ -20,13 +20,29 @@ class RetrievalService:
         limit: int = 5
     ):
 
+        print("=" * 80)
+        print("USER QUESTION:")
+        print(question)
+
         query_embedding = self.embedding_service.generate_embedding(
             question
         )
+
+        print(f"Query embedding dimensions: {len(query_embedding)}")
 
         chunks = await self.chunk_repository.search_similar_chunks(
             query_embedding=query_embedding,
             limit=limit
         )
+
+        print(f"Retrieved chunks count: {len(chunks)}")
+
+
+        for index, chunk in enumerate(chunks):
+
+            print("=" * 80)
+            print(f"Retrieved Chunk {index + 1}")
+            print(chunk.content[:500])
+
 
         return chunks

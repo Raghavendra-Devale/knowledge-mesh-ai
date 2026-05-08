@@ -7,6 +7,9 @@ class EmbeddingService:
         )
     
     def generate_embedding(self, text: str):
+        
+        print(f"Generating embedding for text length: {len(text)}")
+
         return self.model.embed_query(text)
     
     

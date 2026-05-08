@@ -1,3 +1,5 @@
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.routes.ingestion_routes import router as ingestion_router
 from app.api.routes.chat_routes import router as chat_router
 
@@ -22,6 +24,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:4200"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(ingestion_router)
