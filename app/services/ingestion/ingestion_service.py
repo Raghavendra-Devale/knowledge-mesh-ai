@@ -1,4 +1,7 @@
+import logging
 from langchain_community.document_loaders import PyPDFLoader
+
+logger = logging.getLogger(__name__)
 
 from app.models.entities import DocumentChunk
 from app.repositories.chunk_repository import ChunkRepository
@@ -24,25 +27,24 @@ class IngestionService:
         
     async def ingest_pdf(self, db, pdf_path: str):
         # pdf_path = r"C:/Users/devale/Downloads/Raghavendra_Devale (1).pdf"
-        # print(os.path.exists(pdf_path))
-        # print(os.path.isfile(pdf_path))
+        # logger.debug(os.path.exists(pdf_path))
+        # logger.debug(os.path.isfile(pdf_path))
         
         loader = PyPDFLoader(pdf_path)
-        print(repr(pdf_path))
+        logger.info(repr(pdf_path))
         
         documents = loader.load()
-        print(f"Pages loaded: {len(documents)}")
+        logger.info(f"Pages loaded: {len(documents)}")
 
         chunks = self.chunking_service.split_text(documents)
-       # logger.info(f"Total chunks created: {len(chunks)}")
-        print(f"Total chunks created: {len(chunks)}")
+        logger.info(f"Total chunks created: {len(chunks)}")
         
         entities = []
         
         for index, chunk in enumerate(chunks):
             
-            print(f"Chunk {index}:")
-            print(chunk.page_content[:300])
+            logger.info(f"Chunk {index}:")
+            logger.info(chunk.page_content[:300])
             
             embedding = self.embedding_service.generate_embedding(
                 chunk.page_content

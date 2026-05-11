@@ -1,3 +1,4 @@
+import logging
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.ingestion_routes import router as ingestion_router
@@ -9,17 +10,22 @@ from fastapi import FastAPI
 
 from app.services.embedding_service import EmbeddingService
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    print("Loading embedding model...")
+    logger.info("Loading embedding model...")
 
     app.state.embedding_service = EmbeddingService()
 
     yield
 
-    print("Shutting down application...")
+    logger.info("Shutting down application...")
     
 
 app = FastAPI(

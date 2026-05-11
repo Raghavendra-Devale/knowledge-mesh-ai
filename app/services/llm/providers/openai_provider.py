@@ -1,7 +1,10 @@
+import logging
 from langchain_openai import ChatOpenAI
 
 from app.core.config import settings
 from app.services.llm.llm_provider import LLMProvider
+
+logger = logging.getLogger(__name__)
 
 
 class OpenAIProvider(LLMProvider):
@@ -14,21 +17,8 @@ class OpenAIProvider(LLMProvider):
             temperature=0.3
         )
 
-    async def generate(self, prompt: str, context: str) -> str:
-        full_prompt = f"""
-You are a helpful AI assistant.
-
-Answer ONLY using the provided context.
-
-If the answer is not present in the context,
-say you do not have enough information.
-
-Context:
-{context}
-
-Question:
-{prompt}
-"""
+    async def generate(self, full_prompt: str) -> str:
+        logger.info("Generating response with OpenAI model.")
         response = await self.llm.ainvoke(full_prompt)
 
         return response.content

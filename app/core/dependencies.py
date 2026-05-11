@@ -9,8 +9,11 @@ from app.services.embedding_service import EmbeddingService
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.services.llm.llm_provider import LLMProvider
 from app.services.llm.llm_factory import LLMFactory
+from app.services.chat_service import ChatService
 from app.services.rag_service import RagService
 
+from app.repositories.conversation_repository import ConversationRepository
+from app.repositories.chat_message_repository import ChatMessageRepository
 
 from app.services.ingestion.ingestion_service import IngestionService
 from app.services.chunking_service import ChunkingService
@@ -44,14 +47,31 @@ def get_llm_provider():
     return LLMFactory.create()
 
 
+def get_conversation_repository(db: AsyncSession = Depends(get_db)):
+    return ConversationRepository(db)
+
+def get_chat_message_repository(db: AsyncSession = Depends(get_db)):
+    return ChatMessageRepository(db)
+
+def get_chat_service(
+    conversation_repository: ConversationRepository = Depends(get_conversation_repository),
+    chat_message_repository: ChatMessageRepository = Depends(get_chat_message_repository)
+):
+    return ChatService(
+        conversation_repository=conversation_repository,
+        chat_message_repository=chat_message_repository
+    )
+
 def get_rag_service(
     retrieval_service: RetrievalService = Depends(get_retrieval_service),
-    llm_provider: LLMProvider = Depends(get_llm_provider)
+    llm_provider: LLMProvider = Depends(get_llm_provider),
+    chat_service: ChatService = Depends(get_chat_service)
 ):
 
     return RagService(
         retrieval_service=retrieval_service,
-        llm_provider=llm_provider
+        llm_provider=llm_provider,
+        chat_service=chat_service
     )
 
 def get_chunking_service():
