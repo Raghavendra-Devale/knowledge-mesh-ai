@@ -14,7 +14,7 @@ class LLMFactory:
         if provider == "gemini":
             return GeminiProvider()
 
-        elif provider == "openai":
+        if provider == "openai":
             return OpenAIProvider()
 
         raise ValueError("Unsupported LLM provider")

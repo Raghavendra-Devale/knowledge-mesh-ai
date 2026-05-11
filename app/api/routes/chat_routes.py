@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+import json
+
 
 from app.core.dependencies import get_rag_service
 from app.services.rag_service import RagService
@@ -12,7 +14,7 @@ router = APIRouter(
 
 
 class ChatRequest(BaseModel):
-    question: str
+    message: str
 
 
 @router.post("/")
@@ -22,7 +24,8 @@ async def chat(
 ):
 
     response = await rag_service.ask(
-        question=request.question
+        question=request.message
     )
-
+    print("Response:\n")
+    print(json.dumps(response, indent=4))
     return response

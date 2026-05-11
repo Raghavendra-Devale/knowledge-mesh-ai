@@ -21,7 +21,7 @@ class RetrievalService:
     ):
 
         print("=" * 80)
-        print("USER QUESTION:")
+        print("USER QUESTION: \n")
         print(question)
 
         query_embedding = self.embedding_service.generate_embedding(
@@ -43,6 +43,7 @@ class RetrievalService:
             print("=" * 80)
             print(f"Retrieved Chunk {index + 1}")
             print(chunk.content[:500])
+            print("=" * 80)
 
 
         return chunks

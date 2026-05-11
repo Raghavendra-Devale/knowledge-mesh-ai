@@ -7,7 +7,8 @@ from app.repositories.chunk_repository import ChunkRepository
 
 from app.services.embedding_service import EmbeddingService
 from app.services.retrieval.retrieval_service import RetrievalService
-from app.services.llm_service import LLMService
+from app.services.llm.llm_provider import LLMProvider
+from app.services.llm.llm_factory import LLMFactory
 from app.services.rag_service import RagService
 
 
@@ -39,18 +40,18 @@ def get_retrieval_service(
     )
 
 
-def get_llm_service():
-    return LLMService()
+def get_llm_provider():
+    return LLMFactory.create()
 
 
 def get_rag_service(
     retrieval_service: RetrievalService = Depends(get_retrieval_service),
-    llm_service: LLMService = Depends(get_llm_service)
+    llm_provider: LLMProvider = Depends(get_llm_provider)
 ):
 
     return RagService(
         retrieval_service=retrieval_service,
-        llm_service=llm_service
+        llm_provider=llm_provider
     )
 
 def get_chunking_service():

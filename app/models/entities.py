@@ -24,3 +24,5 @@ class DocumentChunk(Base):
 
     document_name = Column(String, nullable=True)
     
+    # client = Column(String,nullable=True)
+    
