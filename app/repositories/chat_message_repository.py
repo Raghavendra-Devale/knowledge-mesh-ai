@@ -1,4 +1,4 @@
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.entities import ChatMessage
@@ -42,6 +42,28 @@ class ChatMessageRepository:
             select(ChatMessage)
             .where(
                 ChatMessage.conversation_id == conversation_id
+            )
+            .order_by(desc(ChatMessage.created_at))
+            .limit(limit)
+        )
+
+        messages = result.scalars().all()
+
+        return list(reversed(messages))
+
+    async def get_today_messages(
+        self,
+        user_id: str,
+        conversation_id: int,
+        limit: int = 10
+    ) -> list[ChatMessage]:
+
+        result = await self.db.execute(
+            select(ChatMessage)
+            .where(
+                ChatMessage.user_id == user_id,
+                ChatMessage.conversation_id == conversation_id,
+                func.date(ChatMessage.created_at) == func.current_date()
             )
             .order_by(desc(ChatMessage.created_at))
             .limit(limit)

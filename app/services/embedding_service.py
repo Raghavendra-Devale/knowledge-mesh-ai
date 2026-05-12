@@ -13,7 +13,7 @@ class EmbeddingService:
     
     def generate_embedding(self, text: str):
         
-        logger.info(f"Generating embedding for text length: {len(text)}")
+        logger.info("Generating embedding for text length: %d", len(text))
 
         return self.model.embed_query(text)
     

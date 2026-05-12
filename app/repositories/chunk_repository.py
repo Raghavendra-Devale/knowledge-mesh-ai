@@ -37,7 +37,7 @@ class ChunkRepository:
     
     
     async def save_chunks(self, chunks: list):
-        logger.info(f"Saving {len(chunks)} chunks to database")
+        logger.info("Saving %d chunks to database", len(chunks))
 
         self.db.add_all(chunks)
         await self.db.commit()

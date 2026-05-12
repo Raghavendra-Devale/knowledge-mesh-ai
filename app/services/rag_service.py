@@ -26,23 +26,48 @@ class RagService:
     async def ask(
         self,
         question: str,
-        conversation_id: int,
+        conversation_id: Optional[int] = None,
         user_id: Optional[str] = None
     ):
 
+        logger.info(
+            "Received Ask Request - Conversation ID: %s, User ID: %s",
+            conversation_id,
+            user_id
+        )
+
+        if user_id:
+            try:
+                uuid.UUID(user_id)
+            except ValueError:
+                user_id = None
+
         if not user_id:
+
+            logger.info("User ID is None, generating new user_id")
+
             user_id = str(uuid.uuid4())
-        
+
+            logger.info("New User ID: %s", user_id)
+
+        if not conversation_id:
+            conversation = await self.chat_service.create_conversation(user_id=user_id)
+            conversation_id = conversation.id
+
         await self.chat_service.save_user_message(
             conversation_id=conversation_id,
             user_id=user_id,
             content=question
         )
 
-        # STEP 1 — Load previous conversation history
+        # STEP 1 — Load today's conversation history
         history = await self.chat_service.get_today_conversation_history(
-            user_id=user_id
+            user_id=user_id,
+            conversation_id=conversation_id
         )
+
+        logger.info("User ID: %s", user_id)
+        logger.info("History Count: %d", len(history))
 
         # STEP 2 — Format conversation history
         conversation_context = self.format_conversation_history(
@@ -70,6 +95,7 @@ class RagService:
         if not retrieval_response.results:
 
             return {
+                "conversation_id": conversation_id,
                 "user_id": user_id,
                 "reply": (
                     "I couldn't find any relevant "
@@ -87,13 +113,6 @@ class RagService:
         logger.info(
             "Retrieved Context: %s",
             context
-        )
-
-        # STEP 7 — Save user message
-        await self.chat_service.save_user_message(
-            conversation_id=conversation_id,
-            user_id=user_id,
-            content=question
         )
 
         # STEP 8 — Build final prompt
@@ -134,6 +153,7 @@ Instructions:
 
         # STEP 11 — Return response
         return {
+            "conversation_id": conversation_id,
             "user_id": user_id,
             "reply": answer,
             "sources": [

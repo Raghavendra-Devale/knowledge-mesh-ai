@@ -19,7 +19,7 @@ router = APIRouter(
 
 class ChatRequest(BaseModel):
     message: str
-    conversation_id: int
+    conversation_id: Optional[int] = None
     user_id: Optional[str] = None
 
 
@@ -28,13 +28,13 @@ async def chat(
     request: ChatRequest,
     rag_service: RagService = Depends(get_rag_service)
 ):
-    logger.info(f"Received chat request: {request.message} from user: {request.user_id}")
+    
+    logger.info("Received chat request: %s from user: %s", request.message, request.user_id)
 
     response = await rag_service.ask(
         question=request.message,
         conversation_id=request.conversation_id,
         user_id=request.user_id
     )
-    logger.info("Response:\n")
-    logger.info(json.dumps(response, indent=4))
+    logger.debug("Response: %s", json.dumps(response, indent=4))
     return response

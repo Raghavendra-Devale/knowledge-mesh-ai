@@ -51,11 +51,26 @@ class ChatService:
         content: str
     ):
 
+       
+
         return await self.chat_message_repository.save_message(
             conversation_id=conversation_id,
             user_id=user_id,
             role="assistant",
             content=content
+        )
+
+    async def get_today_conversation_history(
+        self,
+        user_id: str,
+        conversation_id: int,
+        limit: int = 10
+    ):
+
+        return await self.chat_message_repository.get_today_messages(
+            user_id=user_id,
+            conversation_id=conversation_id,
+            limit=limit
         )
 
     async def get_recent_conversation_history(

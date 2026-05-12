@@ -26,9 +26,7 @@ class RetrievalService:
         question: str,
         limit: int = 5
     ) -> RetrievalResponse:
-        logger.info("=" * 80)
-        logger.info("USER QUESTION:")
-        logger.info(question)
+        logger.info("User question: %s", question)
 
         cleaned_question = self.preprocess_query(
             question
@@ -38,9 +36,7 @@ class RetrievalService:
             cleaned_question
         )
 
-        logger.info(
-            f"Query embedding dimensions: {len(query_embedding)}"
-        )
+        logger.info("Query embedding dimensions: %d", len(query_embedding))
 
         # Semantic Retrieval
         retrieved_chunks = await self.chunk_repository.search_similar_chunks(
@@ -54,13 +50,9 @@ class RetrievalService:
             limit=limit
         )
 
-        logger.info(
-            f"Semantic chunks count: {len(retrieved_chunks)}"
-        )
+        logger.info("Semantic chunks count: %d", len(retrieved_chunks))
 
-        logger.info(
-            f"Keyword chunks count: {len(keyword_chunks)}"
-        )
+        logger.info("Keyword chunks count: %d", len(keyword_chunks))
 
         results = []
 
@@ -74,18 +66,12 @@ class RetrievalService:
             if distance > distance_threshold:
 
                 logger.info(
-                    f"Skipping weak semantic chunk "
-                    f"with distance {distance}"
+                    "Skipping weak semantic chunk with distance %f", distance
                 )
 
                 continue
 
-            logger.info("=" * 80)
-            logger.info(
-                f"Retrieved Semantic Chunk {index + 1}"
-            )
-            logger.info(f"Distance Score: {distance}")
-            logger.info("=" * 80)
+            logger.info("Retrieved Semantic Chunk %d with distance %f", index + 1, distance)
 
             result = RetrievalResult(
                 chunk_id=chunk.id,
@@ -112,9 +98,7 @@ class RetrievalService:
             if chunk.id in seen_chunk_ids:
                 continue
 
-            logger.info("=" * 80)
-            logger.info("Retrieved Keyword Chunk")
-            logger.info("=" * 80)
+            logger.info("Retrieved Keyword Chunk with rank %f", rank)
 
             result = RetrievalResult(
                 chunk_id=chunk.id,
@@ -167,8 +151,6 @@ class RetrievalService:
 
         cleaned_query = " ".join(cleaned_words)
 
-        logger.info(
-            f"Cleaned Query: {cleaned_query}"
-        )
+        logger.info("Cleaned Query: %s", cleaned_query)
 
         return cleaned_query

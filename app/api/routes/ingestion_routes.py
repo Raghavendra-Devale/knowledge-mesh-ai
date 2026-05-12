@@ -22,7 +22,7 @@ async def ingest_pdf(
     db: AsyncSession = Depends(get_db),
     ingestion_service: IngestionService = Depends(get_ingestion_service)
 ):
-    logger.info(f"Received ingestion request for PDF: {pdf_path}")
+    logger.info("Received ingestion request for PDF: %s", pdf_path)
 
     return await ingestion_service.ingest_pdf(
         db,

@@ -26,25 +26,20 @@ class IngestionService:
         self.chunking_service = chunking_service
         
     async def ingest_pdf(self, db, pdf_path: str):
-        # pdf_path = r"C:/Users/devale/Downloads/Raghavendra_Devale (1).pdf"
-        # logger.debug(os.path.exists(pdf_path))
-        # logger.debug(os.path.isfile(pdf_path))
-        
         loader = PyPDFLoader(pdf_path)
-        logger.info(repr(pdf_path))
+        logger.info("Loading PDF: %s", pdf_path)
         
         documents = loader.load()
-        logger.info(f"Pages loaded: {len(documents)}")
+        logger.info("Pages loaded: %d", len(documents))
 
         chunks = self.chunking_service.split_text(documents)
-        logger.info(f"Total chunks created: {len(chunks)}")
+        logger.info("Total chunks created: %d", len(chunks))
         
         entities = []
         
         for index, chunk in enumerate(chunks):
             
-            logger.info(f"Chunk {index}:")
-            logger.info(chunk.page_content[:300])
+            logger.debug("Chunk %d preview: %s...", index, chunk.page_content[:300])
             
             embedding = self.embedding_service.generate_embedding(
                 chunk.page_content

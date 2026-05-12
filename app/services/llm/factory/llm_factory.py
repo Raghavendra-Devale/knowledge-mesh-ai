@@ -13,7 +13,7 @@ class LLMFactory:
     def create():
 
         provider = settings.LLM_PROVIDER
-        logger.info(f"Initializing LLM provider: {provider}")
+        logger.info("Initializing LLM provider: %s", provider)
 
         if provider == "gemini":
             return GeminiProvider()
@@ -21,5 +21,5 @@ class LLMFactory:
         if provider == "openai":
             return OpenAIProvider()
 
-        logger.error(f"Unsupported LLM provider: {provider}")
+        logger.error("Unsupported LLM provider: %s", provider)
         raise ValueError("Unsupported LLM provider")
